@@ -26,7 +26,6 @@ class User < ApplicationRecord
   validates :password, length: { in: 6..255 }, allow_nil: true
 
   def self.find_by_credentials(credential, password)
-    
     # determine the field you need to query: 
   #   * `email` if `credential` matches `URI::MailTo::EMAIL_REGEXP`
   #   * `username` if not
@@ -36,6 +35,25 @@ class User < ApplicationRecord
 
   # if a matching user exists, use `authenticate` to check the provided password
   # return the user if the password is correct, otherwise return a falsey value
+    if credential.match?(URI::MailTo::EMAIL_REGEXP)
+      user = User.find_by(email: credential)
+    else
+      user = User.find_by(username: credential)
+    end
+    if user && user.authenticate(password)
+      user
+    else
+      nil
+    end
+
+  end
+
+  def reset_session_token!
+    # `update!` the user's session token to a new, random token
+    # return the new session token, for convenience
+    self.session_token = self.generate_unique_session_token
+    self.save!
+    self.session_token
   end
 
 
