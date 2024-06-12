@@ -26,15 +26,7 @@ class User < ApplicationRecord
   validates :password, length: { in: 6..255 }, allow_nil: true
 
   def self.find_by_credentials(credential, password)
-    # determine the field you need to query: 
-  #   * `email` if `credential` matches `URI::MailTo::EMAIL_REGEXP`
-  #   * `username` if not
-  # find the user whose email/username is equal to `credential`
-
-  # if no such user exists, return a falsey value
-
-  # if a matching user exists, use `authenticate` to check the provided password
-  # return the user if the password is correct, otherwise return a falsey value
+    # find the user with the matching credential from database and check against the password.
     if credential.match?(URI::MailTo::EMAIL_REGEXP)
       user = User.find_by(email: credential)
     else
@@ -49,8 +41,7 @@ class User < ApplicationRecord
   end
 
   def reset_session_token!
-    # `update!` the user's session token to a new, random token
-    # return the new session token, for convenience
+    # sets user's session token to be a new session token and returns it
     self.session_token = self.generate_unique_session_token
     self.save!
     self.session_token
@@ -61,11 +52,6 @@ class User < ApplicationRecord
   private
 
   def generate_unique_session_token
-    # in a loop:
-      # use SecureRandom.base64 to generate a random token
-      # use `User.exists?` to check if this `session_token` is already in use
-      # if already in use, continue the loop, generating a new token
-      # if not in use, return the token
     token = SecureRandom.urlsafe_base64
     while User.exists?(session_token: token)
       token = SecureRandom.urlsafe_base64
@@ -74,8 +60,7 @@ class User < ApplicationRecord
   end
   
   def ensure_session_token
-    # if `self.session_token` is already present, leave it be
-    # if `self.session_token` is nil, set it to `generate_unique_session_token`
+    #to be invoked before validations, ensuring each user has a session token.
     self.session_token ||= generate_unique_session_token
   end
 
