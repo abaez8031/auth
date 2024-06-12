@@ -37,7 +37,6 @@ class User < ApplicationRecord
     else
       nil
     end
-
   end
 
   def reset_session_token!
