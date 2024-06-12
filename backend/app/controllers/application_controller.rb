@@ -2,23 +2,26 @@ class ApplicationController < ActionController::API
   before_action :snake_case_params
 
   def current_user
-    @current_user ||= User.find_by(session_token: session[:session_token])# user whose `session_token` == token in `session` cookie
+    #returns the current user
+    @current_user ||= User.find_by(session_token: session[:session_token])
   end
   
   def login!(user)
-    # reset `user`'s `session_token` and store in `session` cookie
+    #logs the current user in, sets session_token key in session to be the users session_token
     session[:session_token] = user.reset_session_token!
   end
   
   def logout!
-    # reset the `current_user`'s session cookie, if one exists
+    # resets the current_user's session token
+    # deletes the session_token key from cookies
+    # sets current user to nil
     current_user.reset_session_token!
     session[:session_token] = nil
-    # clear out token from `session` cookie
-    @current_user = nil # so that subsequent calls to `current_user` return nil
+    @current_user = nil
   end
   
   def require_logged_in
+    # to restrict access to routes that require the user to be logged in
     unless current_user
       render json: { message: 'Unauthorized' }, status: :unauthorized 
     end
