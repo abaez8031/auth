@@ -6,7 +6,6 @@ import "./LoginForm.css"
 
 const LoginFormPage = () => {
   const currentUser = useSelector(state => state.session.user)
-  console.log(currentUser)
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
