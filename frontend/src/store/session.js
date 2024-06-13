@@ -23,6 +23,10 @@ export const login = user => async dispatch => {
     dispatch(addUser(data.user));
     return res;
   }
+  else {
+    const error = await res.json();
+    throw error
+  }
 }
 
 const initialState = { user: JSON.parse(sessionStorage.getItem("currentUser")) }
