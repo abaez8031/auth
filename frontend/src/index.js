@@ -6,6 +6,7 @@ import './index.css';
 import App from './App';
 import configureStore from './store';
 import csrfFetch, { restoreCSRF } from './store/csrf';
+import * as sessionActions from './store/session';
 
 let store = configureStore();
 
@@ -37,5 +38,6 @@ if (sessionStorage.getItem("X-CSRF-Token") === null) {
 
 if (process.env.NODE_ENV !== 'production') {
   window.store = store;
-  window.csrfFetch = csrfFetch
+  window.csrfFetch = csrfFetch;
+  window.sessionActions = sessionActions;
 }
