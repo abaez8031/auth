@@ -44,6 +44,15 @@ export const register = user => async dispatch => {
   }
 }
 
+export const logout = () => async dispatch => {
+  const res = await csrfFetch("/api/session", {
+    method: "DELETE"
+  })
+  if (res.ok) {
+    storeCurrentUser(null);
+    dispatch(removeUser())
+  }
+}
 const storeCurrentUser = (user) => {
   if(user) sessionStorage.setItem("CurrentUser", JSON.stringify(user))
   else sessionStorage.removeItem("CurrentUser")
